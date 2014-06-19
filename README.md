@@ -17,7 +17,7 @@ As seguintes estruturadas de dados estão implementadas:
 
 * HashTable (hastable)
 * List (list)
-* RBTree (rbt)
+* RBTree (rbtree)
 
 
 ## Intruções de Uso
@@ -25,11 +25,15 @@ As seguintes estruturadas de dados estão implementadas:
 Execute o comando abaixo no terminal substituindo  `<estrutura-de-dados>` por uma das estruturas listadas acima.
 
 ```ShellSession
-$ java -jar best-algorithm.jar <estrutura-de-dados> C:\Users\matheus\git\best-algorithm\dicionario.txt C:\Users\matheus\git\best-algorithm\consulta.txt
+$ git clone https://github.com/matheussampaio/best-algorithm
+$ cd best-algorithm
+$ ./dicionario <estrutura-de-dados> C:\Users\matheus\git\best-algorithm\dicionario.txt C:\Users\matheus\git\best-algorithm\consulta.txt
 ```
 
 Por exemplo:
 
 ```ShellSession
-$ java -jar best-algorithm.jar rbt C:\Users\matheus\git\best-algorithm\dicionario.txt C:\Users\matheus\git\best-algorithm\consulta.txt
+$ git clone https://github.com/matheussampaio/best-algorithm
+$ cd best-algorithm
+$ ./dicionario list C:\Users\matheus\git\best-algorithm\dicionario.txt C:\Users\matheus\git\best-algorithm\consulta.txt
 ```
