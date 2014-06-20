@@ -4,23 +4,42 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-import utils.Utils;
+import utils.CalculateTime;
 import utils.WriteAnalysis;
 import core.Algorithm;
 import core.AlgorithmHashtable;
 import core.AlgorithmList;
 import core.AlgorithmRBTree;
 
+/**
+ * The Class Main.
+ */
 public class Main {
 
+    /** The Constant LIST. */
     private static final String LIST = "list";
+
+    /** The Constant HASHTABLE. */
     private static final String HASHTABLE = "hashtable";
+
+    /** The Constant RBTREE. */
     private static final String RBTREE = "rbtree";
+
+    /** The algorithm. */
     private static Algorithm algorithm;
+
+    /** The write analysis. */
     private static WriteAnalysis writeAnalysis;
 
+    /**
+     * Exec query.
+     * 
+     * @param path
+     *            the path
+     */
     public static void execQuery(String path) {
         BufferedReader br = null;
+        CalculateTime cTime = new CalculateTime();
 
         try {
 
@@ -31,9 +50,9 @@ public class Main {
             boolean result = false;
 
             while ((word = br.readLine()) != null) {
-                Utils.startTime();
+                cTime.startTime();
                 algorithm.contains(word);
-                writeAnalysis.writeQuery(word, Utils.stopTime());
+                writeAnalysis.writeQuery(word, cTime.stopTime());
                 if (result) {
                     System.out.println(word + " : S");
                 } else {
@@ -55,8 +74,15 @@ public class Main {
 
     }
 
+    /**
+     * Load data.
+     * 
+     * @param path
+     *            the path
+     */
     public static void loadData(String path) {
         BufferedReader br = null;
+        CalculateTime cTime = new CalculateTime();
 
         try {
 
@@ -65,9 +91,9 @@ public class Main {
             br = new BufferedReader(new FileReader(path));
 
             while ((word = br.readLine()) != null) {
-                Utils.startTime();
+                cTime.startTime();
                 algorithm.insert(word);
-                writeAnalysis.writeInsert(word, Utils.stopTime());
+                writeAnalysis.writeInsert(word, cTime.stopTime());
             }
 
         } catch (IOException e) {
@@ -84,8 +110,22 @@ public class Main {
 
     }
 
+    /**
+     * The main method.
+     * 
+     * @param args
+     *            the arguments
+     */
     public static void main(String[] args) {
-        String dataPath, queryPath, algorithmType;
+        // Path para o arquivo contendo as palavras que serao adicionadas.
+        String dataPath;
+
+        // Path para o arquivo contendo as palavras que serao consultadas.
+        String queryPath;
+
+        // FLAG para definir qual estrutura será usada: LIST, HASHTABLE ou
+        // RBTREE
+        String algorithmType;
 
         if (args.length < 3) {
             System.err.print("Missing args");
@@ -104,15 +144,36 @@ public class Main {
             algorithm = new AlgorithmRBTree();
         } else {
             System.err
-                    .println("Algorithm type not know. Please use one of them: "
+                    .println("Algorithm type not known. Please use one of them: "
                             + LIST + " " + HASHTABLE + " " + RBTREE);
             return;
         }
 
         writeAnalysis = new WriteAnalysis(algorithmType);
 
+        CalculateTime cTime = new CalculateTime();
+
+        cTime.startTime();
+
         loadData(dataPath);
+
+        long loadTotalTime = cTime.stopTime();
+
+        cTime.startTime();
+
         execQuery(queryPath);
+
+        long queryTotalTime = cTime.stopTime();
+
+        System.out.println("tempo_de_carga : " + String.valueOf(loadTotalTime));
+        System.out.println("tempo_da_consulta : "
+                + String.valueOf(queryTotalTime));
+
+        // TODO: Calculate the memory usage
+        long memoryUsage = 0;
+
+        System.out.println("consumo_de_memoria : "
+                + String.valueOf(memoryUsage));
 
         writeAnalysis.close();
     }

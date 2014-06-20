@@ -3,15 +3,15 @@ package utils;
 /**
  * The Class Utils.
  */
-public class Utils {
+public class CalculateTime {
 
     /** The millis. */
-    private static long millis;
+    private long millis;
 
     /**
      * Start time.
      */
-    public static void startTime() {
+    public void startTime() {
         millis = System.nanoTime();
     }
 
@@ -20,7 +20,7 @@ public class Utils {
      * 
      * @return the long
      */
-    public static long stopTime() {
+    public long stopTime() {
         return System.nanoTime() - millis;
     }
 
