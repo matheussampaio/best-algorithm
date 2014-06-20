@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+import utils.Utils;
+import utils.WriteAnalysis;
 import core.Algorithm;
 import core.AlgorithmHashtable;
 import core.AlgorithmList;
@@ -14,6 +16,8 @@ public class Main {
     private static final String LIST = "list";
     private static final String HASHTABLE = "hashtable";
     private static final String RBTREE = "rbtree";
+    private static Algorithm algorithm;
+    private static WriteAnalysis writeAnalysis;
 
     public static void execQuery(String path) {
         BufferedReader br = null;
@@ -24,8 +28,13 @@ public class Main {
 
             br = new BufferedReader(new FileReader(path));
 
+            boolean result = false;
+
             while ((word = br.readLine()) != null) {
-                if (algorithm.contains(word)) {
+                Utils.startTime();
+                algorithm.contains(word);
+                writeAnalysis.writeQuery(word, Utils.stopTime());
+                if (result) {
                     System.out.println(word + " : S");
                 } else {
                     System.out.println(word + " : N");
@@ -56,7 +65,9 @@ public class Main {
             br = new BufferedReader(new FileReader(path));
 
             while ((word = br.readLine()) != null) {
+                Utils.startTime();
                 algorithm.insert(word);
+                writeAnalysis.writeInsert(word, Utils.stopTime());
             }
 
         } catch (IOException e) {
@@ -72,8 +83,6 @@ public class Main {
         }
 
     }
-
-    private static Algorithm algorithm;
 
     public static void main(String[] args) {
         String dataPath, queryPath, algorithmType;
@@ -100,7 +109,11 @@ public class Main {
             return;
         }
 
+        writeAnalysis = new WriteAnalysis(algorithmType);
+
         loadData(dataPath);
         execQuery(queryPath);
+
+        writeAnalysis.close();
     }
 }
