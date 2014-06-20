@@ -1,15 +1,18 @@
 package core;
 
+import java.util.HashMap;
+
 public class AlgorithmHashtable implements Algorithm {
+	
+	private HashMap<String, String> dicionario = new HashMap<String, String>();
 
     public boolean insert(String word) {
-        // TODO Auto-generated method stub
-        return false;
+        dicionario.put(word, null);
+        return true;
     }
 
     public boolean contains(String word) {
-        // TODO Auto-generated method stub
-        return false;
+        return dicionario.containsKey(word);
     }
 
 }
