@@ -14,4 +14,11 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>palavras.txt</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/palavras.txt</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>

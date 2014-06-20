@@ -7,8 +7,6 @@ public class AlgorithmHashtable implements Algorithm {
 
 	private HashMap<String, String> dicionario = new HashMap<String, String>();
 
-	Hashtable<String, String> h = new Hashtable<String, String>();
-
 	public boolean insert(String word) {
 		if (word != null) {
 			dicionario.put(word, null);
