@@ -3,190 +3,191 @@ package main;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-
 import utils.CalculateTime;
+import utils.ManipulateTextFile;
 import utils.MemoryUsageCheck;
-import utils.WriteAnalysis;
 import core.Algorithm;
 import core.AlgorithmHashtable;
 import core.AlgorithmList;
 import core.AlgorithmRBTree;
 
 /**
- * The Class Main.
+ * The Class Main2 is used to simply run without passing args on terminal.
  */
 public class Main {
 
-    /** The Constant LIST. */
-    private static final String LIST = "list";
+	/** The Constant LIST. */
+	private static final String LIST = "list";
 
-    /** The Constant HASHTABLE. */
-    private static final String HASHTABLE = "hashtable";
+	/** The Constant HASHTABLE. */
+	private static final String HASHTABLE = "hashtable";
 
-    /** The Constant RBTREE. */
-    private static final String RBTREE = "rbtree";
+	/** The Constant RBTREE. */
+	private static final String RBTREE = "rbtree";
 
-    /** The algorithm. */
-    private static Algorithm algorithm;
+	/** The algorithm. */
+	private static Algorithm algorithm;
 
-    /** The write analysis. */
-    private static WriteAnalysis writeAnalysis;
-    
-    /** Memory Usage Checker . */
-    private static MemoryUsageCheck memoryUsageCheck;
+	/** Memory Usage Checker . */
+	private static MemoryUsageCheck memoryUsageCheck;
+	
+	private static long loadTotalTime;
 
-    /**
-     * Exec query.
-     * 
-     * @param path
-     *            the path
-     */
-    public static void execQuery(String path) {
-        BufferedReader br = null;
-        CalculateTime cTime = new CalculateTime();
+	private static long queryTotalTime;
 
-        try {
+	/**
+	 * Exec query.
+	 * 
+	 * @param path
+	 *            the path
+	 */
+	public static void execQuery(String path) {
+		BufferedReader br = null;
+		CalculateTime cTime = new CalculateTime();
 
-            String word;
+		try {
 
-            br = new BufferedReader(new FileReader(path));
+			String word;
 
-            boolean result = false;
+			br = new BufferedReader(new FileReader(path));
 
-            while ((word = br.readLine()) != null) {
-                cTime.startTime();
-                algorithm.contains(word); // duvida > nao faz nada com o retorno?
-                writeAnalysis.writeQuery(word, cTime.stopTime());
-                if (result) {
-                    System.out.println(word + " : S");
-                } else {
-                    System.out.println(word + " : N");
-                }
-            }
+			boolean result = false;
+			//reservar memoria agora para isto não atrapalhar o tempo de consulta
+			long stopTime; 
+			
+			while ((word = br.readLine()) != null) {
+				cTime.startTime();
+				result = algorithm.contains(word);
+				if (result) {
+					System.out.println(word + " : S");
+				} else {
+					System.out.println(word + " : N");
+				}
+				stopTime = cTime.stopTime();
+				ManipulateTextFile.addCSVQueryTime(algorithm, stopTime);
+				
+			}
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (br != null) {
-                    br.close();
-                }
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (br != null) {
+					br.close();
+				}
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
 
-    }
+	}
 
-    /**
-     * Load data.
-     * 
-     * @param path
-     *            the path
-     */
-    public static void loadData(String path) {
-        BufferedReader br = null;
-        CalculateTime cTime = new CalculateTime();
-        memoryUsageCheck.checkInitialMemory();
-        
+	/**
+	 * Load data.
+	 * 
+	 * @param path
+	 *            the path
+	 */
+	public static void loadData(String path) {
+		BufferedReader br = null;
+		CalculateTime cTime = new CalculateTime();
 
-        try {
+		try {
 
-            String word;
+			String word;
 
-            br = new BufferedReader(new FileReader(path));
+			br = new BufferedReader(new FileReader(path));
 
-            while ((word = br.readLine()) != null) {
-                cTime.startTime();
-                algorithm.insert(word);
-                writeAnalysis.writeInsert(word, cTime.stopTime());
-            }
+			cTime.startTime();
+			
+			memoryUsageCheck.checkInitialMemory();
+			
+			while ((word = br.readLine()) != null) {
+				cTime.startTime();
+				algorithm.insert(word);
+			}
+			
+			memoryUsageCheck.checkFinalMemory();
+			
+			ManipulateTextFile.addCSVLoadTime(algorithm, cTime.stopTime());
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (br != null) {
-                    br.close();
-                }
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-        
-        memoryUsageCheck.checkFinalMemory();
-        
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (br != null) {
+					br.close();
+				}
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
 
-    }
+	}
 
-    /**
-     * The main method.
-     * 
-     * @param args
-     *            the arguments
-     */
-    public static void main(String[] args) {
-    	// instanciar o medidor de tempo e de memoria antes do metodo load, caso contrario o tempo de medição será interferido pelo tempo de instanciação das classes
-    	memoryUsageCheck = new MemoryUsageCheck();
-    	
-        // Path para o arquivo contendo as palavras que serao adicionadas.
-        String dataPath;
+	/**
+	 * The main method.
+	 * 
+	 * @param args
+	 *            the arguments
+	 */
+	public static void main(String[] args) {
+		// instanciar o medidor de tempo e de memoria antes do metodo load, caso
+		// contrario o tempo de medição será interferido pelo tempo de
+		// instanciação das classes
+		memoryUsageCheck = new MemoryUsageCheck();
 
-        // Path para o arquivo contendo as palavras que serao consultadas.
-        String queryPath;
+		// Path para o arquivo contendo as palavras que serao adicionadas.
+		String dataPath;
 
-        // FLAG para definir qual estrutura será usada: LIST, HASHTABLE ou
-        // RBTREE
-        String algorithmType;
+		// Path para o arquivo contendo as palavras que serao consultadas.
+		String queryPath;
 
-        if (args.length < 3) {
-            System.err.print("Missing args");
-            return;
-        } else {
-            algorithmType = args[0];
-            dataPath = args[1];
-            queryPath = args[2];
-        }
+		// FLAG para definir qual estrutura será usada: LIST, HASHTABLE ou
+		// RBTREE
+		String algorithmType;
 
-        if (algorithmType.equals(LIST)) {
-            algorithm = new AlgorithmList();
-        } else if (algorithmType.equals(HASHTABLE)) {
-            algorithm = new AlgorithmHashtable();
-        } else if (algorithmType.equals(RBTREE)) {
-            algorithm = new AlgorithmRBTree();
-        } else {
-            System.err
-                    .println("Algorithm type not known. Please use one of them: "
-                            + LIST + " " + HASHTABLE + " " + RBTREE);
-            return;
-        }
+	       if (args.length < 3) {
+	            System.err.print("Missing args\n");
+	            return;
+	        } else {
+	            algorithmType = args[0];
+	            dataPath = args[1];
+	            queryPath = args[2];
+	        }
 
-        writeAnalysis = new WriteAnalysis(algorithmType);
+		if (algorithmType.equals(LIST)) {
+			algorithm = new AlgorithmList();
+		} else if (algorithmType.equals(HASHTABLE)) {
+			algorithm = new AlgorithmHashtable();
+		} else if (algorithmType.equals(RBTREE)) {
+			algorithm = new AlgorithmRBTree();
+		} else {
+			System.err
+					.println("Algorithm type not known. Please use one of them: "
+							+ LIST + " " + HASHTABLE + " " + RBTREE);
+			return;
+		}
+		
+		CalculateTime cTime = new CalculateTime();
+		
+		cTime.startTime();
+		loadData(dataPath);
+		loadTotalTime = cTime.stopTime();
 
-        CalculateTime cTime = new CalculateTime();
-
-        cTime.startTime();
-
-        loadData(dataPath);
-
-        long loadTotalTime = cTime.stopTime();
-
-        cTime.startTime();
-
+		cTime.startTime();
         execQuery(queryPath);
-
-        long queryTotalTime = cTime.stopTime();
+        queryTotalTime = cTime.stopTime();
+        ManipulateTextFile.addCSVTotalQueryTime(algorithm, queryTotalTime);
 
         System.out.println("tempo_de_carga : " + String.valueOf(loadTotalTime));
         System.out.println("tempo_da_consulta : "
                 + String.valueOf(queryTotalTime));
 
-        // TODO: Calculate the memory usage
-        double memoryUsage = memoryUsageCheck.getFreeMemory();
+        double memoryUsage = memoryUsageCheck.getUsedMemory();
+        ManipulateTextFile.addCSVMemoryUsage(algorithm, memoryUsage);
 
         System.out.println("consumo_de_memoria : "
                 + String.valueOf(memoryUsage));
-
-        writeAnalysis.close();
     }
 }

@@ -21,5 +21,9 @@ public class AlgorithmHashtable implements Algorithm {
 		}
 
 	}
+	
+	public int length(){
+		return dicionario.keySet().size();
+	}
 
 }

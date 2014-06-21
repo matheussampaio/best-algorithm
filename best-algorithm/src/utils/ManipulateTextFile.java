@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 import core.Algorithm;
 
-public class ManipulateCSV {
+public class ManipulateTextFile {
 
 	/** The file name query. */
     private static String FILE_NAME_QUERY = "query_times.csv";
@@ -23,22 +23,31 @@ public class ManipulateCSV {
     /** The file to save memory usage data. */
     private static String FILE_NAME_MEMORY_USAGE = "memory_usage.csv";
 	
-    public static void addCsvLoadTime(Algorithm algorithm, long time) {
+    /** The file name query. */
+    private static String FILE_NAME_TOTAL_QUERY = "total_query_times.csv";
+    
+    public static void addCSVLoadTime(Algorithm algorithm, long time) {
     	ArrayList<String> times = loadCSVMap("load_times.csv");
 		times.add(String.valueOf(algorithm.getClass()).substring(20) + "," + time);
 		saveCSV(times, "load_times.csv");
 	}
     
-    public static void addCsvQueryTime(Algorithm algorithm, long time) {
+    public static void addCSVQueryTime(Algorithm algorithm, long time) {
     	ArrayList<String> times = loadCSVMap("query_times.csv");
 		times.add(String.valueOf(algorithm.getClass()).substring(20) + "," + time);
 		saveCSV(times, "query_times.csv");
 	}
     
-    public static void addCsvMemoryUsage(Algorithm algorithm, double memory_usage) {
+    public static void addCSVTotalQueryTime(Algorithm algorithm, long time) {
+    	ArrayList<String> times = loadCSVMap("total_query_times.csv");
+		times.add(String.valueOf(algorithm.getClass()).substring(20) + "," + time);
+		saveCSV(times, "total_query_times.csv");
+	}
+    
+    public static void addCSVMemoryUsage(Algorithm algorithm, double memory_usage) {
     	ArrayList<String> memUsage = loadCSVMap("memory_usage.csv");
     	memUsage.add(String.valueOf(algorithm.getClass()).substring(20) + "," + memory_usage);
-    	saveCSV(memUsage, "memory_usage.csv");
+    	saveMemoryCSV(memUsage, "memory_usage.csv");
 	}
 	
 	private static ArrayList<String> loadCSVMap(String filePath) {
@@ -74,13 +83,35 @@ public class ManipulateCSV {
 		return reader;
 	}
 	
-	public static void saveCSV(ArrayList<String> array, String fileName) {
+	private static void saveCSV(ArrayList<String> array, String fileName) {
 		try {
 
 			OutputStreamWriter bufferOut = new OutputStreamWriter(
 					new FileOutputStream(fileName), "UTF-8");
 			
 			bufferOut.write("algorithm,time");
+			bufferOut.write("\n");
+			
+			for (String linha : array) {
+				bufferOut.write(linha);
+				bufferOut.write("\n");
+			}
+			
+
+			bufferOut.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void saveMemoryCSV(ArrayList<String> array, String fileName) {
+		try {
+
+			OutputStreamWriter bufferOut = new OutputStreamWriter(
+					new FileOutputStream(fileName), "UTF-8");
+			
+			bufferOut.write("algorithm,memory_usage");
 			bufferOut.write("\n");
 			
 			for (String linha : array) {
@@ -104,12 +135,13 @@ public class ManipulateCSV {
 			OutputStreamWriter bufferOut = new OutputStreamWriter(
 					new FileOutputStream(fileName));
 
-			if(fileName.equals(FILE_NAME_LOAD) || fileName.equals(FILE_NAME_QUERY)){
+			if(fileName.equals(FILE_NAME_LOAD) || fileName.equals(FILE_NAME_QUERY) || fileName.equals(FILE_NAME_TOTAL_QUERY)){
 				bufferOut.write("algorithm");
 				bufferOut.write(",");
 				bufferOut.write("time");
 				bufferOut.write("\n");
 				bufferOut.close();
+				
 			}else if(fileName.equals(FILE_NAME_MEMORY_USAGE)){
 				bufferOut.write("algorithm");
 				bufferOut.write(",");

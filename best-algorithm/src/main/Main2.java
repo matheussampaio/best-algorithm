@@ -3,10 +3,9 @@ package main;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-
 import utils.CalculateTime;
+import utils.ManipulateTextFile;
 import utils.MemoryUsageCheck;
-import utils.WriteAnalysis;
 import core.Algorithm;
 import core.AlgorithmHashtable;
 import core.AlgorithmList;
@@ -29,11 +28,12 @@ public class Main2 {
 	/** The algorithm. */
 	private static Algorithm algorithm;
 
-	/** The write analysis. */
-	private static WriteAnalysis writeAnalysis;
-
 	/** Memory Usage Checker . */
 	private static MemoryUsageCheck memoryUsageCheck;
+	
+	private static long loadTotalTime;
+
+	private static long queryTotalTime;
 
 	/**
 	 * Exec query.
@@ -52,16 +52,20 @@ public class Main2 {
 			br = new BufferedReader(new FileReader(path));
 
 			boolean result = false;
-
+			//reservar memoria agora para isto não atrapalhar o tempo de consulta
+			long stopTime; 
+			
 			while ((word = br.readLine()) != null) {
 				cTime.startTime();
-				algorithm.contains(word);
-				writeAnalysis.writeQuery(word, cTime.stopTime());
+				result = algorithm.contains(word);
 				if (result) {
 					System.out.println(word + " : S");
 				} else {
 					System.out.println(word + " : N");
 				}
+				stopTime = cTime.stopTime();
+				ManipulateTextFile.addCSVQueryTime(algorithm, stopTime);
+				
 			}
 
 		} catch (IOException e) {
@@ -87,7 +91,6 @@ public class Main2 {
 	public static void loadData(String path) {
 		BufferedReader br = null;
 		CalculateTime cTime = new CalculateTime();
-		memoryUsageCheck.checkInitialMemory();
 
 		try {
 
@@ -95,11 +98,18 @@ public class Main2 {
 
 			br = new BufferedReader(new FileReader(path));
 
+			cTime.startTime();
+			
+			memoryUsageCheck.checkInitialMemory();
+			
 			while ((word = br.readLine()) != null) {
 				cTime.startTime();
 				algorithm.insert(word);
-				writeAnalysis.writeInsert(word, cTime.stopTime());
 			}
+			
+			memoryUsageCheck.checkFinalMemory();
+			
+			ManipulateTextFile.addCSVLoadTime(algorithm, cTime.stopTime());
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -112,10 +122,6 @@ public class Main2 {
 				ex.printStackTrace();
 			}
 		}
-		
-		memoryUsageCheck.checkFinalMemory();
-        System.out.println("=============================");
-        System.out.println("free mem " + memoryUsageCheck.getFreeMemory());  
 
 	}
 
@@ -142,8 +148,13 @@ public class Main2 {
 		String algorithmType;
 
 		algorithmType = "hashtable";
-		dataPath = "/home/tales/git/best-algorithm/dicionario.txt";
+		dataPath = "/home/tales/git/best-algorithm/palavras.txt";
 		queryPath = "/home/tales/git/best-algorithm/consulta.txt";
+		
+		ManipulateTextFile.createCSV("load_times.csv");
+		ManipulateTextFile.createCSV("query_times.csv");
+		ManipulateTextFile.createCSV("total_query_times.csv");
+		ManipulateTextFile.createCSV("memory_usage.csv");
 
 		if (algorithmType.equals(LIST)) {
 			algorithm = new AlgorithmList();
@@ -157,33 +168,27 @@ public class Main2 {
 							+ LIST + " " + HASHTABLE + " " + RBTREE);
 			return;
 		}
-
-		writeAnalysis = new WriteAnalysis(algorithmType);
-
+		
 		CalculateTime cTime = new CalculateTime();
-
+		
 		cTime.startTime();
-
 		loadData(dataPath);
-
-		long loadTotalTime = cTime.stopTime();
+		loadTotalTime = cTime.stopTime();
 
 		cTime.startTime();
-
         execQuery(queryPath);
-
-        long queryTotalTime = cTime.stopTime();
+        queryTotalTime = cTime.stopTime();
+        ManipulateTextFile.addCSVTotalQueryTime(algorithm, queryTotalTime);
 
         System.out.println("tempo_de_carga : " + String.valueOf(loadTotalTime));
         System.out.println("tempo_da_consulta : "
                 + String.valueOf(queryTotalTime));
 
-        // TODO: Calculate the memory usage
-        double memoryUsage = memoryUsageCheck.getFreeMemory();
+        double memoryUsage = memoryUsageCheck.getUsedMemory();
 
         System.out.println("consumo_de_memoria : "
                 + String.valueOf(memoryUsage));
 
-        writeAnalysis.close();
+
     }
 }
