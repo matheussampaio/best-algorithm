@@ -1,37 +1,37 @@
 package utils;
 
+/**
+ * This class calculates the memory usage based on the difference of free memory
+ * avaliable at two moments set by the checkInitialMemory() and
+ * checkFinalMemory() methods.
+ * 
+ * @author tales
+ * 
+ */
+
 public class MemoryUsageCheck {
 
 	private double initialFreeMemory;
-	private double initialTotalMemory;
 	private double finalFreeMemory;
-	private double finalTotalMemory;
 	private Runtime runtime;
-	
+
 	public MemoryUsageCheck() {
 		runtime = Runtime.getRuntime();
 	}
-	
+
 	/**
 	 * Method to check memory at the moment zero.
 	 */
 	public void checkInitialMemory() {
 		initialFreeMemory = runtime.freeMemory();
-		initialTotalMemory = runtime.totalMemory();
-		
 	}
-	
-	public void checkFinalMemory(){
+
+	public void checkFinalMemory() {
 		finalFreeMemory = runtime.freeMemory();
-		finalTotalMemory = runtime.totalMemory();
 	}
-	
-	public double getFreeMemory(){
-		return finalFreeMemory - initialFreeMemory;
-	}
-	
-	public double getTotalMemory(){
-		return finalTotalMemory - initialTotalMemory;
+
+	public double getFreeMemory() {
+		return initialFreeMemory - finalFreeMemory;
 	}
 
 }
