@@ -1,7 +1,6 @@
 package core;
 
 import java.util.HashMap;
-import java.util.Hashtable;
 
 public class AlgorithmHashtable implements Algorithm {
 

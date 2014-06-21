@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import utils.CalculateTime;
+import utils.MemoryUsageCheck;
 import utils.WriteAnalysis;
 import core.Algorithm;
 import core.AlgorithmHashtable;
@@ -30,6 +31,9 @@ public class Main {
 
     /** The write analysis. */
     private static WriteAnalysis writeAnalysis;
+    
+    /** Memory Usage Checker . */
+    private static MemoryUsageCheck memoryUsageCheck;
 
     /**
      * Exec query.
@@ -83,6 +87,8 @@ public class Main {
     public static void loadData(String path) {
         BufferedReader br = null;
         CalculateTime cTime = new CalculateTime();
+        memoryUsageCheck.checkInitialMemory();
+        
 
         try {
 
@@ -117,13 +123,16 @@ public class Main {
      *            the arguments
      */
     public static void main(String[] args) {
+    	// instanciar o medidor de tempo e de memoria antes do metodo load, caso contrario o tempo de medição será interferido pelo tempo de instanciação das classes
+    	memoryUsageCheck = new MemoryUsageCheck();
+    	
         // Path para o arquivo contendo as palavras que serao adicionadas.
         String dataPath;
 
         // Path para o arquivo contendo as palavras que serao consultadas.
         String queryPath;
 
-        // FLAG para definir qual estrutura ser� usada: LIST, HASHTABLE ou
+        // FLAG para definir qual estrutura será usada: LIST, HASHTABLE ou
         // RBTREE
         String algorithmType;
 
