@@ -30,7 +30,7 @@ public class MemoryUsageCheck {
 		finalFreeMemory = runtime.freeMemory();
 	}
 
-	public double getFreeMemory() {
+	public double getUsedMemory() {
 		return initialFreeMemory - finalFreeMemory;
 	}
 
