@@ -55,7 +55,7 @@ public class Main {
 
             while ((word = br.readLine()) != null) {
                 cTime.startTime();
-                algorithm.contains(word);
+                algorithm.contains(word); // duvida > nao faz nada com o retorno?
                 writeAnalysis.writeQuery(word, cTime.stopTime());
                 if (result) {
                     System.out.println(word + " : S");
@@ -113,6 +113,9 @@ public class Main {
                 ex.printStackTrace();
             }
         }
+        
+        memoryUsageCheck.checkFinalMemory();
+        
 
     }
 
@@ -179,7 +182,7 @@ public class Main {
                 + String.valueOf(queryTotalTime));
 
         // TODO: Calculate the memory usage
-        long memoryUsage = 0;
+        double memoryUsage = memoryUsageCheck.getFreeMemory();
 
         System.out.println("consumo_de_memoria : "
                 + String.valueOf(memoryUsage));

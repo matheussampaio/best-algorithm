@@ -14,6 +14,9 @@ public class WriteAnalysis {
 
     /** The file name insert. */
     private static String FILE_NAME_INSERT;
+    
+    /** The file to save memory usage data. */
+    private static String FILE_NAME_MEMORY_USAGE;
 
     PrintWriter writerQuery;
 
@@ -41,7 +44,7 @@ public class WriteAnalysis {
     }
 
     /**
-     * Write insert.
+     * Write time cost for iserting a word.
      * 
      * @param word
      *            the word
@@ -53,7 +56,7 @@ public class WriteAnalysis {
     }
 
     /**
-     * Write query.
+     * Write query time cost for a specific word.
      * 
      * @param word
      *            the word

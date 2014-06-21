@@ -13,7 +13,7 @@ import core.AlgorithmList;
 import core.AlgorithmRBTree;
 
 /**
- * The Class Main.
+ * The Class Main2 is used to simply run without passing args on terminal.
  */
 public class Main2 {
 
@@ -170,20 +170,20 @@ public class Main2 {
 
 		cTime.startTime();
 
-		execQuery(queryPath);
+        execQuery(queryPath);
 
-		long queryTotalTime = cTime.stopTime();
+        long queryTotalTime = cTime.stopTime();
 
-		System.out.println("tempo_de_carga : " + String.valueOf(loadTotalTime));
-		System.out.println("tempo_da_consulta : "
-				+ String.valueOf(queryTotalTime));
+        System.out.println("tempo_de_carga : " + String.valueOf(loadTotalTime));
+        System.out.println("tempo_da_consulta : "
+                + String.valueOf(queryTotalTime));
 
-		// TODO: Calculate the memory usage
-		long memoryUsage = 0;
+        // TODO: Calculate the memory usage
+        double memoryUsage = memoryUsageCheck.getFreeMemory();
 
-		System.out.println("consumo_de_memoria : "
-				+ String.valueOf(memoryUsage));
+        System.out.println("consumo_de_memoria : "
+                + String.valueOf(memoryUsage));
 
-		writeAnalysis.close();
-	}
+        writeAnalysis.close();
+    }
 }
