@@ -4,26 +4,28 @@ import java.util.HashMap;
 
 public class AlgorithmHashtable implements Algorithm {
 
-	private HashMap<String, String> dicionario = new HashMap<String, String>();
+    private final HashMap<String, String> dicionario = new HashMap<String, String>();
 
-	public boolean insert(String word) {
-		if (word != null) {
-			dicionario.put(word, null);
-		}
-		return true;
-	}
+    @Override
+    public boolean insert(String word) {
+        if (word != null) {
+            dicionario.put(word.toLowerCase(), null);
+        }
+        return true;
+    }
 
-	public boolean contains(String word) {
-		if (word != null) {
-			return dicionario.containsKey(word);
-		}else{
-			return false;
-		}
+    @Override
+    public boolean contains(String word) {
+        if (word != null) {
+            return dicionario.containsKey(word.toLowerCase());
+        } else {
+            return false;
+        }
 
-	}
-	
-	public int length(){
-		return dicionario.keySet().size();
-	}
+    }
+
+    public int length() {
+        return dicionario.keySet().size();
+    }
 
 }

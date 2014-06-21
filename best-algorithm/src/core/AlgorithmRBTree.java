@@ -24,7 +24,7 @@ public class AlgorithmRBTree implements Algorithm {
      */
     @Override
     public boolean insert(String word) {
-        if (tree.put(word, 0) == null) {
+        if (tree.put(word.toLowerCase(), 0) == null) {
             return true;
         }
 
@@ -38,7 +38,7 @@ public class AlgorithmRBTree implements Algorithm {
      */
     @Override
     public boolean contains(String word) {
-        return tree.containsKey(word);
+        return tree.containsKey(word.toLowerCase());
     }
 
 }

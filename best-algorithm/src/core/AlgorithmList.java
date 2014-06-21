@@ -56,7 +56,7 @@ public class AlgorithmList implements Algorithm {
             doubleSize();
         }
 
-        list[nextIndex] = word;
+        list[nextIndex] = word.toLowerCase();
         nextIndex++;
 
         return true;
@@ -69,8 +69,9 @@ public class AlgorithmList implements Algorithm {
      */
     @Override
     public boolean contains(String word) {
+
         for (int i = 0; i < list.length; i++) {
-            if (word.equals(list[i])) {
+            if (word.equalsIgnoreCase(list[i])) {
                 return true;
             }
         }
