@@ -14,13 +14,14 @@ public class WriteAnalysis {
 
     /** The file name insert. */
     private static String FILE_NAME_INSERT;
-    
-    /** The file to save memory usage data. */
-    private static String FILE_NAME_MEMORY_USAGE;
+
+    private static String FILE_NAME_MEMORY;
 
     PrintWriter writerQuery;
 
     PrintWriter writerInsert;
+
+    PrintWriter writerMemory;
 
     /**
      * Instantiates a new write analysis.
@@ -31,10 +32,12 @@ public class WriteAnalysis {
     public WriteAnalysis(String algorithm) {
         FILE_NAME_QUERY = "query_" + algorithm + ".csv";
         FILE_NAME_INSERT = "insert_" + algorithm + ".csv";
+        FILE_NAME_MEMORY = "memory_" + algorithm + ".csv";
 
         try {
             writerQuery = new PrintWriter(FILE_NAME_QUERY, "UTF-8");
             writerInsert = new PrintWriter(FILE_NAME_INSERT, "UTF-8");
+            writerMemory = new PrintWriter(FILE_NAME_MEMORY, "UTF-8");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
@@ -65,6 +68,10 @@ public class WriteAnalysis {
      */
     public void writeQuery(String word, long time) {
         writerQuery.println(word + ", " + String.valueOf(time));
+    }
+
+    public void writeMemory(String word, long time) {
+        writerMemory.println(word + ", " + String.valueOf(time));
     }
 
     public void close() {
