@@ -2,7 +2,7 @@
 
 if [ $# == 3 ]
 then
-	java -jar best-algorithm.jar $1 $2 $3
+	java -jar -Xmx1024m best-algorithm.jar $1 $2 $3
 else
 	echo "Deve conter ao menos 3 paramentros"
 fi
