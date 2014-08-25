@@ -1,3 +1,4 @@
+
 package utils;
 
 import java.io.FileNotFoundException;
@@ -9,73 +10,45 @@ import java.io.UnsupportedEncodingException;
  */
 public class WriteAnalysis {
 
-    /** The file name query. */
-    private static String FILE_NAME_QUERY;
+    private static String FILE_NAME_ANALYSIS;
 
-    /** The file name insert. */
-    private static String FILE_NAME_INSERT;
-
-    private static String FILE_NAME_MEMORY;
-
-    PrintWriter writerQuery;
-
-    PrintWriter writerInsert;
-
-    PrintWriter writerMemory;
+    PrintWriter writerAnalysis;
 
     /**
      * Instantiates a new write analysis.
-     * 
-     * @param algorithm
-     *            the algorithm
+     *
+     * @param algorithm the algorithm
      */
-    public WriteAnalysis(String algorithm) {
-        FILE_NAME_QUERY = "query_" + algorithm + ".csv";
-        FILE_NAME_INSERT = "insert_" + algorithm + ".csv";
-        FILE_NAME_MEMORY = "memory_" + algorithm + ".csv";
+    public WriteAnalysis(final String algorithm) {
+        FILE_NAME_ANALYSIS = "analysis_" + algorithm + ".csv";
 
         try {
-            writerQuery = new PrintWriter(FILE_NAME_QUERY, "UTF-8");
-            writerInsert = new PrintWriter(FILE_NAME_INSERT, "UTF-8");
-            writerMemory = new PrintWriter(FILE_NAME_MEMORY, "UTF-8");
-        } catch (FileNotFoundException e) {
+            writerAnalysis = new PrintWriter(FILE_NAME_ANALYSIS, "UTF-8");
+        } catch (final FileNotFoundException e) {
             e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
+        } catch (final UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 
+        printHeader();
+
     }
 
-    /**
-     * Write time cost for iserting a word.
-     * 
-     * @param word
-     *            the word
-     * @param time
-     *            the time
-     */
-    public void writeInsert(String word, long time) {
-        writerInsert.println(word + ", " + String.valueOf(time));
-    }
-
-    /**
-     * Write query time cost for a specific word.
-     * 
-     * @param word
-     *            the word
-     * @param time
-     *            the time
-     */
-    public void writeQuery(String word, long time) {
-        writerQuery.println(word + ", " + String.valueOf(time));
-    }
-
-    public void writeMemory(String word, long time) {
-        writerMemory.println(word + ", " + String.valueOf(time));
+    private void printHeader() {
+        write("repeticoes, load_total_time, query_total_time, memory_total_usage");
     }
 
     public void close() {
-        writerInsert.close();
-        writerQuery.close();
+        writerAnalysis.close();
+    }
+
+    public void writeAnalysis(final int i, final long loadTotalTime, final long queryTotalTime,
+            final double memoryUsage) {
+        write(i + ", " + loadTotalTime + ", " + queryTotalTime + ", " + memoryUsage);
+    }
+
+    private void write(final String str) {
+        writerAnalysis.println(str);
+        writerAnalysis.flush();
     }
 }

@@ -1,16 +1,17 @@
+
 package main;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-
-import utils.CalculateTime;
-import utils.MemoryUsageCheck;
-import utils.WriteAnalysis;
 import core.Algorithm;
 import core.AlgorithmHashtable;
 import core.AlgorithmList;
 import core.AlgorithmRBTree;
+import utils.CalculateTime;
+import utils.MemoryUsageCheck;
+import utils.WriteAnalysis;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 /**
  * The Class Main2 is used to simply run without passing args on terminal.
@@ -40,13 +41,11 @@ public class Main {
 
     /**
      * Exec query.
-     * 
-     * @param path
-     *            the path
+     *
+     * @param path the path
      */
-    public static void execQuery(String path) {
+    public static void execQuery(final String path) {
         BufferedReader br = null;
-        CalculateTime cTime = new CalculateTime();
 
         try {
 
@@ -57,30 +56,26 @@ public class Main {
             boolean result = false;
             // reservar memoria agora para isto não atrapalhar o tempo de
             // consulta
-            long stopTime;
 
             while ((word = br.readLine()) != null) {
-                cTime.startTime();
                 result = algorithm.contains(word);
+
                 if (result) {
                     System.out.println(word + " : S");
                 } else {
                     System.out.println(word + " : N");
                 }
-                // stopTime = cTime.stopTime();
-                // ManipulateTextFile.addCSVQueryTime(algorithm, stopTime);
-                writeAnalysis.writeQuery(word, cTime.stopTime());
 
             }
 
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         } finally {
             try {
                 if (br != null) {
                     br.close();
                 }
-            } catch (IOException ex) {
+            } catch (final IOException ex) {
                 ex.printStackTrace();
             }
         }
@@ -89,13 +84,11 @@ public class Main {
 
     /**
      * Load data.
-     * 
-     * @param path
-     *            the path
+     *
+     * @param path the path
      */
-    public static void loadData(String path) {
+    public static void loadData(final String path) {
         BufferedReader br = null;
-        CalculateTime cTime = new CalculateTime();
 
         try {
 
@@ -103,28 +96,22 @@ public class Main {
 
             br = new BufferedReader(new FileReader(path));
 
-            cTime.startTime();
-
             memoryUsageCheck.checkInitialMemory();
 
             while ((word = br.readLine()) != null) {
-                cTime.startTime();
                 algorithm.insert(word);
             }
 
             memoryUsageCheck.checkFinalMemory();
 
-            // ManipulateTextFile.addCSVLoadTime(algorithm, cTime.stopTime());
-            writeAnalysis.writeMemory(word, cTime.stopTime());
-
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         } finally {
             try {
                 if (br != null) {
                     br.close();
                 }
-            } catch (IOException ex) {
+            } catch (final IOException ex) {
                 ex.printStackTrace();
             }
         }
@@ -133,11 +120,10 @@ public class Main {
 
     /**
      * The main method.
-     * 
-     * @param args
-     *            the arguments
+     *
+     * @param args the arguments
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         // instanciar o medidor de tempo e de memoria antes do metodo load, caso
         // contrario o tempo de medição será interferido pelo tempo de
         // instanciação das classes
@@ -153,13 +139,16 @@ public class Main {
         // RBTREE
         String algorithmType;
 
-        if (args.length < 3) {
-            System.err.print("Missing args\n");
+        int numRepetition;
+
+        if (args.length < 4) {
+            System.err.println("Missing args: " + args.length);
             return;
         } else {
             algorithmType = args[0];
             dataPath = args[1];
             queryPath = args[2];
+            numRepetition = Integer.valueOf(args[3]);
         }
 
         if (algorithmType.equals(LIST)) {
@@ -169,33 +158,37 @@ public class Main {
         } else if (algorithmType.equals(RBTREE)) {
             algorithm = new AlgorithmRBTree();
         } else {
-            System.err
-                    .println("Algorithm type not known. Please use one of them: "
-                            + LIST + " " + HASHTABLE + " " + RBTREE);
+            System.err.println("Algorithm type not known. Please use one of them: "
+                    + LIST + " " + HASHTABLE + " " + RBTREE);
             return;
         }
 
+        final CalculateTime cTime = new CalculateTime();
+
         writeAnalysis = new WriteAnalysis(algorithmType);
 
-        CalculateTime cTime = new CalculateTime();
+        for (int i = 1; i <= numRepetition; i++) {
 
-        cTime.startTime();
-        loadData(dataPath);
-        loadTotalTime = cTime.stopTime();
+            System.out.println("repeticao : " + i);
 
-        cTime.startTime();
-        execQuery(queryPath);
-        queryTotalTime = cTime.stopTime();
+            cTime.startTime();
+            loadData(dataPath);
+            loadTotalTime = cTime.stopTime();
 
-        System.out.println("tempo_de_carga : " + String.valueOf(loadTotalTime));
-        System.out.println("tempo_da_consulta : "
-                + String.valueOf(queryTotalTime));
+            cTime.startTime();
+            execQuery(queryPath);
+            queryTotalTime = cTime.stopTime();
 
-        double memoryUsage = memoryUsageCheck.getUsedMemory();
-        // ManipulateTextFile.addCSVMemoryUsage(algorithm, memoryUsage);
-        writeAnalysis.writeMemory(algorithmType, (long) memoryUsage);
+            final double memoryUsage = memoryUsageCheck.getUsedMemory();
 
-        System.out.println("consumo_de_memoria : "
-                + String.valueOf(memoryUsage));
+            writeAnalysis.writeAnalysis(i, loadTotalTime, queryTotalTime, memoryUsage);
+
+            System.out.println("tempo_de_carga : " + String.valueOf(loadTotalTime));
+            System.out.println("tempo_da_consulta : " + String.valueOf(queryTotalTime));
+            System.out.println("consumo_de_memoria : " + String.valueOf(memoryUsage));
+
+            System.out.println("\n\n");
+        }
+
     }
 }
