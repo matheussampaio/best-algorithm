@@ -39,10 +39,6 @@ public class WriteAnalysis {
         }
     }
 
-    private void printHeader() {
-        write("repeticoes, load_total_time, query_total_time, memory_total_usage");
-    }
-
     public void close() {
         writerAnalysis.close();
     }
