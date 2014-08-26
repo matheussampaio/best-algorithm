@@ -139,16 +139,13 @@ public class Main {
         // RBTREE
         String algorithmType;
 
-        int numRepetition;
-
-        if (args.length < 4) {
+        if (args.length < 3) {
             System.err.println("Missing args: " + args.length);
             return;
         } else {
             algorithmType = args[0];
             dataPath = args[1];
             queryPath = args[2];
-            numRepetition = Integer.valueOf(args[3]);
         }
 
         if (algorithmType.equals(LIST)) {
@@ -167,28 +164,23 @@ public class Main {
 
         writeAnalysis = new WriteAnalysis(algorithmType);
 
-        for (int i = 1; i <= numRepetition; i++) {
+        cTime.startTime();
+        loadData(dataPath);
+        loadTotalTime = cTime.stopTime();
 
-            System.out.println("repeticao : " + i);
+        cTime.startTime();
+        execQuery(queryPath);
+        queryTotalTime = cTime.stopTime();
 
-            cTime.startTime();
-            loadData(dataPath);
-            loadTotalTime = cTime.stopTime();
+        final double memoryUsage = memoryUsageCheck.getUsedMemory();
 
-            cTime.startTime();
-            execQuery(queryPath);
-            queryTotalTime = cTime.stopTime();
+        writeAnalysis.writeAnalysis(loadTotalTime, queryTotalTime, memoryUsage);
 
-            final double memoryUsage = memoryUsageCheck.getUsedMemory();
+        System.out.println("tempo_de_carga : " + String.valueOf(loadTotalTime));
+        System.out.println("tempo_da_consulta : " + String.valueOf(queryTotalTime));
+        System.out.println("consumo_de_memoria : " + String.valueOf(memoryUsage));
 
-            writeAnalysis.writeAnalysis(i, loadTotalTime, queryTotalTime, memoryUsage);
-
-            System.out.println("tempo_de_carga : " + String.valueOf(loadTotalTime));
-            System.out.println("tempo_da_consulta : " + String.valueOf(queryTotalTime));
-            System.out.println("consumo_de_memoria : " + String.valueOf(memoryUsage));
-
-            System.out.println("\n\n");
-        }
+        writeAnalysis.close();
 
     }
 }

@@ -1,7 +1,10 @@
 
 package utils;
 
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
@@ -23,15 +26,17 @@ public class WriteAnalysis {
         FILE_NAME_ANALYSIS = "analysis_" + algorithm + ".csv";
 
         try {
-            writerAnalysis = new PrintWriter(FILE_NAME_ANALYSIS, "UTF-8");
+            //            writerAnalysis = new PrintWriter(FILE_NAME_ANALYSIS, "UTF-8");
+            writerAnalysis = new PrintWriter(new BufferedWriter(new FileWriter(FILE_NAME_ANALYSIS,
+                    true)));
+
         } catch (final FileNotFoundException e) {
             e.printStackTrace();
         } catch (final UnsupportedEncodingException e) {
             e.printStackTrace();
+        } catch (final IOException e) {
+            e.printStackTrace();
         }
-
-        printHeader();
-
     }
 
     private void printHeader() {
@@ -42,9 +47,9 @@ public class WriteAnalysis {
         writerAnalysis.close();
     }
 
-    public void writeAnalysis(final int i, final long loadTotalTime, final long queryTotalTime,
+    public void writeAnalysis(final long loadTotalTime, final long queryTotalTime,
             final double memoryUsage) {
-        write(i + ", " + loadTotalTime + ", " + queryTotalTime + ", " + memoryUsage);
+        write(loadTotalTime + ", " + queryTotalTime + ", " + memoryUsage);
     }
 
     private void write(final String str) {

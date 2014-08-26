@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 
-if [ $# == 4 ]
+if [ $# == 3 ]
 then
-	java -jar -Xmx1024m best-algorithm.jar $1 $2 $3 $4
+
+    for i in {1..5}
+    do
+	   java -jar -Xmx1024m best-algorithm.jar $1 $2 $3
+    done
 else
-	echo "Deve conter 4 paramentros"
+	echo "Deve conter 3 paramentros"
 fi
